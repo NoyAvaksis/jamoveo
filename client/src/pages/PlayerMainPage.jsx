@@ -18,20 +18,27 @@ function PlayerMainPage() {
       return;
     }
 
+    // 🧪 בדיקת תקשורת עם השרת
+    socket.emit("pingFromClient");
+    socket.on("pongFromServer", (message) => {
+      console.log("✅ בדיקת Socket.IO:", message);
+    });
+
+    // מאזין לשיר מהאדמין
     socket.on('songSelected', (song) => {
-      console.log('Song received from admin:', song);
+      console.log('🎵 Song received from admin:', song);
       localStorage.setItem('currentSong', JSON.stringify(song));
       navigate('/live');
     });
 
     return () => {
       socket.off('songSelected');
+      socket.off('pongFromServer'); // מנקה גם את הבדיקה
     };
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-400 px-4 py-10">
-      {/* Header with logo */}
       <header className="w-full flex justify-start items-center px-6 mb-8">
         <Link to="/">
           <img

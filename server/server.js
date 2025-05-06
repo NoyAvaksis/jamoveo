@@ -48,6 +48,13 @@ io.on("connection", (socket) => {
     io.emit("sessionEnded"); // משדר לכולם
   });
 
+  // 🧪 בדיקת תקשורת - קליינט שולח ping
+  socket.on("pingFromClient", () => {
+    console.log("📨 Ping received from client");
+    socket.emit("pongFromServer", "Pong!");
+  });
+  
+
   socket.on("disconnect", () => {
     console.log("🔴 WebSocket disconnected:", socket.id);
   });
