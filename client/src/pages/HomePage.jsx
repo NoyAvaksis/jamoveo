@@ -5,8 +5,8 @@ function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-400 text-white">
       {/* Header */}
-      <header className="flex justify-between items-center p-6 bg-black/20 backdrop-blur-sm sticky top-0 z-50">
-        <Logo size="w-20 h-20 mb-0" />
+      <header className="flex justify-between items-center p-4 md:p-6 bg-black/20 backdrop-blur-sm sticky top-0 z-50">
+        <Logo className="h-16 md:h-20 lg:h-24" /> {/* Properly increasing logo size */}
         <nav className="flex space-x-4">
           <PrimaryButton to="/login" color="pink">Log In</PrimaryButton>
           <PrimaryButton to="/signup" color="purple">Sign Up</PrimaryButton>
@@ -15,7 +15,6 @@ function HomePage() {
 
       {/* Hero Section */}
       <main className="flex flex-col items-center justify-center px-6 py-16 text-center">
-        <Logo />
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6">Welcome to JaMoveo</h1>
         <p className="text-xl md:text-2xl max-w-2xl mb-16 text-white/90">
           A seamless web app that lets every musician join the groove.
