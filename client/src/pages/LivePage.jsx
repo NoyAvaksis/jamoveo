@@ -46,7 +46,7 @@ function LivePage() {
       scrollRef.current.scrollTop += 2;
     };
 
-    scrollIntervalRef.current = setInterval(scrollStep, 40);
+    scrollIntervalRef.current = setInterval(scrollStep, 30);
     setIsScrolling(true);
   };
 
@@ -63,6 +63,11 @@ function LivePage() {
     socket.emit('sessionEnded');
   };
 
+  // זיהוי האם שורה כוללת תווים בעברית
+  const isHebrew = (line) => {
+    return line.some(word => /[\u0590-\u05FF]/.test(word.lyrics));
+  };
+
   const renderSongContent = () => {
     if (!song?.data || !Array.isArray(song.data)) {
       return <p className="text-white drop-shadow-md text-center">No content to display.</p>;
@@ -71,20 +76,23 @@ function LivePage() {
     const isSinger = user?.role === 'singer';
 
     return song.data.map((line, i) => (
-      <div key={i} className="flex flex-wrap justify-center gap-x-16 text-center mb-20">
-          {line.map((word, j) => (
-    <div key={j} className="flex flex-col items-center min-w-[4ch]">
-      {!isSinger && (
-        <span className="text-purple-300 text-2xl italic mb-0 leading-none drop-shadow">
-          {word.chords || '\u00A0'}
-        </span>
-      )}
-      <span className="text-white text-6xl font-extrabold leading-none drop-shadow-2xl mb-6">
-        {word.lyrics}
-      </span>
-    </div>
-  ))}
-
+      <div
+        key={i}
+        dir={isHebrew(line) ? 'rtl' : 'ltr'}
+        className="flex flex-wrap justify-center gap-x-16 text-center mb-20"
+      >
+        {line.map((word, j) => (
+          <div key={j} className="flex flex-col items-center min-w-[4ch]">
+            {!isSinger && (
+              <span className="text-purple-300 text-2xl italic mb-0 leading-none drop-shadow">
+                {word.chords || '\u00A0'}
+              </span>
+            )}
+            <span className="text-white text-6xl font-extrabold leading-none drop-shadow-2xl mb-6">
+              {word.lyrics}
+            </span>
+          </div>
+        ))}
       </div>
     ));
   };
