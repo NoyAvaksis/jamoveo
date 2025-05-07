@@ -33,7 +33,7 @@ function LivePage() {
   const startAutoScroll = () => {
     if (!scrollRef.current) return;
     scrollIntervalRef.current = setInterval(() => {
-      scrollRef.current.scrollTop += 1;
+      scrollRef.current.scrollBy({ top: 1, behavior: 'smooth' });
     }, 40);
     setIsScrolling(true);
   };
@@ -94,6 +94,7 @@ function LivePage() {
       <div
         ref={scrollRef}
         className="h-[calc(100dvh-220px)] overflow-y-auto scroll-smooth px-4 touch-auto overscroll-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {renderSongContent()}
       </div>
