@@ -3,24 +3,33 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import logo from '../assets/JaMoveoLogo.png';
 
+// Initialize socket connection
 const socket = io(import.meta.env.VITE_SERVER_URL);
 
 function AdminResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Retrieve search results passed via router state
   const results = location.state?.results || [];
 
+  // Handle song selection by admin
   const handleSelectSong = (song) => {
+    // Save selected song to localStorage
     localStorage.setItem('currentSong', JSON.stringify(song));
+
+    // Notify all users via socket event
     socket.emit('songSelected', song);
+
+    // Redirect admin to the live session page
     navigate('/live', { state: { song, role: 'admin' } });
   };
 
   return (
+    // Main container with colorful gradient background
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-400 text-white">
-      
-      {/* Header */}
+
+      {/* Header: App logo and navigation link */}
       <header className="flex justify-start items-center p-4 md:p-6 bg-black/20 backdrop-blur-sm sticky top-0 z-50">
         <Link to="/">
           <img
@@ -31,11 +40,12 @@ function AdminResultsPage() {
         </Link>
       </header>
 
-      {/* Content */}
+      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-start px-4 py-8">
         <div className="bg-white/20 backdrop-blur-md p-8 rounded-xl shadow-2xl w-full max-w-xl">
           <h1 className="text-3xl font-bold text-white mb-6 text-center">Search Results</h1>
 
+          {/* No results fallback */}
           {results.length === 0 ? (
             <div className="text-center">
               <p className="text-white mb-4">No results found. Try searching for a different song.</p>
@@ -47,6 +57,7 @@ function AdminResultsPage() {
               </Link>
             </div>
           ) : (
+            // Render list of search results
             <ul className="space-y-4">
               {results.map((song) => (
                 <li
@@ -63,7 +74,7 @@ function AdminResultsPage() {
         </div>
       </main>
 
-      {/* Footer */}
+      {/* Footer with credit */}
       <footer className="text-center py-6 text-sm bg-black/30">
         Created by Noy Abecassis © 2025 •{' '}
         <a

@@ -1,0 +1,27 @@
+[
+  [
+    { "lyrics": "Imagine", "chords": "C" },
+    { "lyrics": "there's" },
+    { "lyrics": "no", "chords": "Cmaj7" },
+    { "lyrics": "heaven" }
+  ],
+  [
+    { "lyrics": "It's", "chords": "F" },
+    { "lyrics": "easy", "chords": "Am" },
+    { "lyrics": "if", "chords": "Dm" },
+    { "lyrics": "you", "chords": "F" },
+    { "lyrics": "try" }
+  ],
+  [
+    { "lyrics": "No", "chords": "C" },
+    { "lyrics": "hell", "chords": "Cmaj7" },
+    { "lyrics": "below", "chords": "F" },
+    { "lyrics": "us" }
+  ],
+  [
+    { "lyrics": "Above", "chords": "Am" },
+    { "lyrics": "us", "chords": "Dm" },
+    { "lyrics": "only", "chords": "F" },
+    { "lyrics": "sky" }
+  ]
+]

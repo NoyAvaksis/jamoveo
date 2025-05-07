@@ -1,0 +1,43 @@
+[
+  [
+    { "lyrics": "Now", "chords": "C" },
+    { "lyrics": "I've" },
+    { "lyrics": "heard" },
+    { "lyrics": "there", "chords": "A minor" },
+    { "lyrics": "was" },
+    { "lyrics": "a" },
+    { "lyrics": "secret", "chords": "C" },
+    { "lyrics": "chord", "chords": "F" }
+  ],
+  [
+    { "lyrics": "That", "chords": "G" },
+    { "lyrics": "David" },
+    { "lyrics": "played", "chords": "G" },
+    { "lyrics": "and" },
+    { "lyrics": "it" },
+    { "lyrics": "pleased", "chords": "A minor" },
+    { "lyrics": "the" },
+    { "lyrics": "Lord", "chords": "F" }
+  ],
+  [
+    { "lyrics": "But", "chords": "G" },
+    { "lyrics": "you" },
+    { "lyrics": "don't", "chords": "G" },
+    { "lyrics": "really" },
+    { "lyrics": "care", "chords": "A minor" },
+    { "lyrics": "for" },
+    { "lyrics": "music", "chords": "F" },
+    { "lyrics": "do", "chords": "G" },
+    { "lyrics": "you?" }
+  ],
+  [
+    { "lyrics": "It", "chords": "C" },
+    { "lyrics": "goes" },
+    { "lyrics": "like", "chords": "F" },
+    { "lyrics": "this" },
+    { "lyrics": "the", "chords": "G" },
+    { "lyrics": "fourth" },
+    { "lyrics": "the", "chords": "A minor" },
+    { "lyrics": "fifth" }
+  ]
+]
