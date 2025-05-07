@@ -100,8 +100,8 @@ function LivePage() {
         {song.title} <span className="text-4xl italic font-light">– {song.artist}</span>
       </h1>
 
-      {/* כפתורים צפים בצד שמאל עם עיצוב שקוף ועדין */}
-      <div className="absolute left-4 top-32 flex flex-col gap-4 z-10">
+      {/* כפתורים בצד שמאל לדסקטופ */}
+      <div className="absolute left-4 top-32 flex flex-col gap-4 z-10 hidden md:flex">
         <button
           onClick={toggleScroll}
           className="px-6 py-3 rounded-xl text-white text-lg font-semibold border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
@@ -113,6 +113,25 @@ function LivePage() {
           <button
             onClick={handleQuit}
             className="px-6 py-3 rounded-xl text-white text-lg font-semibold border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
+          >
+            Quit
+          </button>
+        )}
+      </div>
+
+      {/* כפתורים בתחתית במסכים קטנים */}
+      <div className="fixed bottom-4 left-0 w-full px-6 flex justify-center gap-4 z-10 md:hidden">
+        <button
+          onClick={toggleScroll}
+          className="flex-1 px-4 py-3 rounded-xl text-white text-sm font-medium border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
+        >
+          {isScrolling ? 'Stop' : 'Scroll'}
+        </button>
+
+        {isAdmin && (
+          <button
+            onClick={handleQuit}
+            className="flex-1 px-4 py-3 rounded-xl text-white text-sm font-medium border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
           >
             Quit
           </button>
