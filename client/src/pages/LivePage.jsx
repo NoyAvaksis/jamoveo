@@ -63,7 +63,6 @@ function LivePage() {
     socket.emit('sessionEnded');
   };
 
-  // זיהוי האם שורה כוללת תווים בעברית
   const isHebrew = (line) => {
     return line.some(word => /[\u0590-\u05FF]/.test(word.lyrics));
   };
@@ -105,11 +104,17 @@ function LivePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 text-white p-4 relative">
-      <h1 className="text-6xl font-extrabold text-center mb-12 drop-shadow-lg">
-        {song.title} <span className="text-4xl italic font-light">– {song.artist}</span>
+      {/* Greeting */}
+      <h1 className="text-4xl font-light text-center mb-2 drop-shadow-md">
+        Hey {user.username}, let’s make some noise! 🎸🥁🎤
       </h1>
 
-      {/* כפתורים בתחתית – מוצגים בכל הרזולוציות */}
+      {/* Song title */}
+      <h2 className="text-6xl font-extrabold text-center mb-12 drop-shadow-lg">
+        {song.title} <span className="text-4xl italic font-light">– {song.artist}</span>
+      </h2>
+
+      {/* Buttons */}
       <div className="fixed bottom-4 left-0 w-full px-6 flex justify-center gap-4 z-10">
         <button
           onClick={toggleScroll}
@@ -128,6 +133,7 @@ function LivePage() {
         )}
       </div>
 
+      {/* Lyrics & Chords */}
       <div
         ref={scrollRef}
         className="h-[75vh] overflow-y-auto bg-white/10 rounded-xl p-8"
