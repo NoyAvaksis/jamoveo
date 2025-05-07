@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 
 function LivePage() {
   const scrollRef = useRef(null);
+  const scrollIntervalRef = useRef(null);
   const [isScrolling, setIsScrolling] = useState(false);
 
   const song = JSON.parse(localStorage.getItem('currentSong'));
@@ -11,16 +12,27 @@ function LivePage() {
 
   const scrollToBottom = () => {
     if (!scrollRef.current) return;
-    scrollRef.current.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
+
+    const scrollStep = () => {
+      if (!scrollRef.current) return;
+
+      // בדיקה אם הגענו לסוף הגלילה
+      if (scrollRef.current.scrollTop + scrollRef.current.clientHeight >= scrollRef.current.scrollHeight) {
+        clearInterval(scrollIntervalRef.current);
+        setIsScrolling(false);
+        return;
+      }
+
+      scrollRef.current.scrollTop += 2; // שינוי קטן בכל צעד כדי להאט את הגלילה
+    };
+
+    scrollIntervalRef.current = setInterval(scrollStep, 40); // קצב הגלילה
     setIsScrolling(true);
   };
 
   const stopScroll = () => {
+    clearInterval(scrollIntervalRef.current);
     setIsScrolling(false);
-    // אין דרך לעצור scrollTo באמצע, אבל נוכל להתעלם מהמצב אם נרצה
   };
 
   const toggleScroll = () => {
@@ -45,7 +57,7 @@ function LivePage() {
       <div
         ref={scrollRef}
         className="h-[70vh] overflow-y-auto bg-white/10 rounded-xl p-4"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        style={{ WebkitOverflowScrolling: 'touch', overflowY: 'auto' }}
       >
         <div className="space-y-8">
           {song.data.map((line, i) => (
