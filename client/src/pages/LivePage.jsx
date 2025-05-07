@@ -8,7 +8,7 @@ function LivePage() {
   const [user, setUser] = useState(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollRef = useRef(null);
-  const scrollIntervalRef = useRef(null);
+  const scrollAnimationRef = useRef(null);
 
   useEffect(() => {
     const storedSong = JSON.parse(localStorage.getItem('currentSong'));
@@ -30,16 +30,20 @@ function LivePage() {
     return () => socket.off('sessionEnded');
   }, []);
 
+  const scrollStep = () => {
+    if (!scrollRef.current || !isScrolling) return;
+    scrollRef.current.scrollTop += 1;
+    scrollAnimationRef.current = requestAnimationFrame(scrollStep);
+  };
+
   const startAutoScroll = () => {
     if (!scrollRef.current) return;
-    scrollIntervalRef.current = setInterval(() => {
-      scrollRef.current.scrollBy({ top: 1, behavior: 'smooth' });
-    }, 40);
     setIsScrolling(true);
+    scrollStep();
   };
 
   const stopAutoScroll = () => {
-    clearInterval(scrollIntervalRef.current);
+    cancelAnimationFrame(scrollAnimationRef.current);
     setIsScrolling(false);
   };
 
