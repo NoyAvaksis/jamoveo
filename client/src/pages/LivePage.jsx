@@ -17,7 +17,7 @@ function LivePage() {
     setSong(storedSong);
     setUser(storedUser);
 
-    return () => stopScroll(); // החלפנו ל־stopScroll במקום stopAutoScroll
+    return () => stopScroll();
   }, []);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ function LivePage() {
     return () => socket.off('sessionEnded');
   }, []);
 
-  // גרסה מותאמת לגלילה שעובדת טוב גם במובייל
   const scrollToBottom = () => {
     if (!scrollRef.current) return;
 
@@ -46,10 +45,10 @@ function LivePage() {
         return;
       }
 
-      scrollRef.current.scrollTop += 2; // האטה בגלילה
+      scrollRef.current.scrollTop += 2;
     };
 
-    scrollIntervalRef.current = setInterval(scrollStep, 20); // קצב גלילה
+    scrollIntervalRef.current = setInterval(scrollStep, 20);
     setIsScrolling(true);
   };
 
@@ -113,7 +112,7 @@ function LivePage() {
         {renderSongContent()}
       </div>
 
-      <div className="absolute bottom-4 left-0 w-full px-8 flex justify-between items-center pointer-events-none">
+      <div className="absolute bottom-4 left-0 w-full px-8 flex justify-center items-center gap-6 pointer-events-none">
         <div className="pointer-events-auto">
           <button
             onClick={toggleScroll}
