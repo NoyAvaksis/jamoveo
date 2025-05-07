@@ -46,7 +46,7 @@ function LivePage() {
       scrollRef.current.scrollTop += 2;
     };
 
-    scrollIntervalRef.current = setInterval(scrollStep, 20);
+    scrollIntervalRef.current = setInterval(scrollStep, 40);
     setIsScrolling(true);
   };
 
@@ -73,13 +73,13 @@ function LivePage() {
     return song.data.map((line, i) => (
       <div key={i} className="flex flex-wrap justify-center gap-x-16 text-center mb-20">
         {line.map((word, j) => (
-          <div key={j} className="flex flex-col items-center min-w-[6ch]">
+          <div key={j} className="flex flex-col items-center min-w-[4ch]">
             {!isSinger && (
-              <span className="text-purple-300 text-4xl italic mb-4 leading-none drop-shadow-lg">
+              <span className="text-purple-300 text-2xl italic mb-0 leading-none drop-shadow">
                 {word.chords || '\u00A0'}
               </span>
             )}
-            <span className="text-white text-7xl font-extrabold leading-relaxed drop-shadow-2xl">
+            <span className="text-white text-6xl font-extrabold leading-none drop-shadow-2xl">
               {word.lyrics}
             </span>
           </div>
@@ -95,23 +95,16 @@ function LivePage() {
   const isAdmin = user.role === 'admin';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 text-white p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 text-white p-4 relative">
       <h1 className="text-6xl font-extrabold text-center mb-12 drop-shadow-lg">
         {song.title} <span className="text-4xl italic font-light">– {song.artist}</span>
       </h1>
 
-      <div
-        ref={scrollRef}
-        className="h-[75vh] overflow-y-auto bg-white/10 rounded-xl p-8"
-        style={{ WebkitOverflowScrolling: 'touch', overflowY: 'auto' }}
-      >
-        <div className="space-y-20">{renderSongContent()}</div>
-      </div>
-
-      <div className="mt-12 flex justify-center gap-10 flex-wrap">
+      {/* כפתורים צפים בצד שמאל עם עיצוב שקוף ועדין */}
+      <div className="absolute left-4 top-32 flex flex-col gap-4 z-10">
         <button
           onClick={toggleScroll}
-          className="bg-gradient-to-r from-green-500 to-green-700 text-white px-10 py-4 rounded-2xl shadow-2xl text-2xl font-semibold hover:scale-105 active:scale-95 transition"
+          className="px-6 py-3 rounded-xl text-white text-lg font-semibold border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
         >
           {isScrolling ? 'Stop Scrolling' : 'Scroll to Bottom'}
         </button>
@@ -119,11 +112,19 @@ function LivePage() {
         {isAdmin && (
           <button
             onClick={handleQuit}
-            className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-10 py-4 rounded-2xl shadow-2xl text-2xl font-semibold hover:scale-105 active:scale-95 transition"
+            className="px-6 py-3 rounded-xl text-white text-lg font-semibold border border-white/30 bg-white/20 backdrop-blur-md shadow-lg hover:bg-white/30 transition"
           >
             Quit
           </button>
         )}
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="h-[75vh] overflow-y-auto bg-white/10 rounded-xl p-8"
+        style={{ WebkitOverflowScrolling: 'touch', overflowY: 'auto' }}
+      >
+        <div className="space-y-20">{renderSongContent()}</div>
       </div>
     </div>
   );
