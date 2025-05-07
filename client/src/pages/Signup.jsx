@@ -21,6 +21,7 @@ function Signup({ isAdmin }) {
     confirmPassword: '',
   });
 
+  const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const validatePassword = (password) => {
@@ -37,6 +38,8 @@ function Signup({ isAdmin }) {
       ...prev,
       [name]: value,
     }));
+
+    setServerError('');
 
     if (name === 'password') {
       setErrors((prev) => ({
@@ -84,7 +87,13 @@ function Signup({ isAdmin }) {
       await axios.post(url, payload);
       navigate('/login');
     } catch (err) {
-      console.error('Signup failed:', err.response?.data || err.message);
+      let errorMessage = 'Signup failed. Please try again.';
+
+      if (err.response?.data?.error?.includes('E11000')) {
+        errorMessage = 'Username already exists. Please choose a different one.';
+      }
+
+      setServerError(errorMessage);
     }
   };
 
@@ -104,6 +113,12 @@ function Signup({ isAdmin }) {
       <div className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md p-8 bg-white/20 backdrop-blur-md rounded-xl shadow-2xl">
           <h1 className="text-3xl font-bold text-center text-white mb-6">Sign Up</h1>
+
+          {serverError && (
+            <div className="bg-red-500/30 border border-red-500 text-white p-3 rounded-lg mb-4 text-sm text-center">
+              {serverError}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username */}
@@ -137,16 +152,7 @@ function Signup({ isAdmin }) {
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="absolute right-3 top-2.5 text-white/70 hover:text-white"
                 >
-                  {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.27-2.943-9.542-7a10.04 10.04 0 012.442-3.847M21 21L3 3" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  )}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
               {errors.password && (
@@ -211,7 +217,8 @@ function Signup({ isAdmin }) {
 
       {/* Footer */}
       <footer className="text-center py-6 text-sm bg-black/30">
-        Created by Noy Abecassis © 2025 • <a href="https://github.com/NoyAvaksis" className="underline">GitHub</a>
+        Created by Noy Abecassis © 2025 •{' '}
+        <a href="https://github.com/NoyAvaksis" className="underline" target="_blank" rel="noopener noreferrer">GitHub</a>
       </footer>
     </div>
   );
