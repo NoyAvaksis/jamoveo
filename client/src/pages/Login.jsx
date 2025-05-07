@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import LoginHeader from '../components/login/LoginHeader';
-import UsernameField from '../components/login/UsernameField';
-import PasswordField from '../components/login/PasswordField';
-import ServerErrorMessage from '../components/login/ServerErrorMessage';
-import SignupRedirect from '../components/login/SignupRedirect';
+import { useNavigate, Link } from 'react-router-dom';
+import Logo from '../components/Logo';
+import PrimaryButton from '../components/PrimaryButton';
 
 const baseURL = import.meta.env.VITE_SERVER_URL;
 
@@ -68,37 +65,97 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-start items-center bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-400 px-4 py-10">
-      <LoginHeader />
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-400 text-white">
+      {/* Header */}
+      <header className="flex justify-between items-center p-4 md:p-6 bg-black/20 backdrop-blur-sm sticky top-0 z-50">
+        <Link to="/">
+          <Logo className="h-16 md:h-20 lg:h-24" />
+        </Link>
+        <nav className="flex space-x-4">
+          <PrimaryButton to="/signup" color="purple">Sign Up</PrimaryButton>
+        </nav>
+      </header>
 
-      <h1 className="text-3xl font-bold text-white mb-8">Log In</h1>
-
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white/20 backdrop-blur-md p-8 rounded-xl shadow-2xl">
-        <UsernameField
-          value={formData.username}
-          onChange={handleChange}
-          error={errors.username}
-        />
-
-        <PasswordField
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
-          show={showPassword}
-          toggleShow={() => setShowPassword((prev) => !prev)}
-        />
-
-        <button
-          type="submit"
-          className="w-full py-3 bg-purple-600 text-white font-semibold rounded-md hover:bg-purple-700 transition"
-        >
-          Log In
-        </button>
-
-        <ServerErrorMessage message={serverError} />
-
-        <SignupRedirect />
-      </form>
+      {/* Login Form */}
+      <div className="flex-1 flex items-center justify-center px-4 md:px-6">
+        <div className="w-full max-w-md p-6 md:p-8 bg-white/10 backdrop-blur-md rounded-xl shadow-lg">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Log In</h2>
+          
+          {serverError && (
+            <div className="bg-red-500/30 border border-red-500 text-white p-3 rounded-lg mb-4">
+              {serverError}
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit}>
+            {/* Username Field */}
+            <div className="mb-4">
+              <label className="block text-white mb-1">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 bg-white/10 border ${
+                  errors.username ? 'border-red-500' : 'border-white/30'
+                } rounded-lg focus:outline-none focus:border-white text-white`}
+                placeholder="Enter your username"
+              />
+              {errors.username && (
+                <p className="text-red-400 text-sm mt-1">{errors.username}</p>
+              )}
+            </div>
+            
+            {/* Password Field */}
+            <div className="mb-6">
+              <label className="block text-white mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 bg-white/10 border ${
+                    errors.password ? 'border-red-500' : 'border-white/30'
+                  } rounded-lg focus:outline-none focus:border-white text-white`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-2 text-white/70 hover:text-white"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
+            
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="w-full bg-pink-600 hover:bg-pink-700 text-white py-2 rounded-lg font-medium transition-colors"
+            >
+              Log In
+            </button>
+          </form>
+          
+          {/* Sign Up Redirect */}
+          <p className="text-center mt-6">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-pink-300 hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
+      
+      {/* Footer */}
+      <footer className="text-center py-6 text-sm bg-black/30">
+        Created by Noy Abecassis © 2025 • <a href="https://github.com/NoyAvaksis" className="underline">GitHub</a>
+      </footer>
     </div>
   );
 }
