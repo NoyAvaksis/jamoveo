@@ -1,32 +1,55 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { io } from 'socket.io-client';
+
+const socket = io(import.meta.env.VITE_SERVER_URL);
 
 function LivePage() {
+  const [song, setSong] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isScrolling, setIsScrolling] = useState(false);
   const scrollRef = useRef(null);
   const scrollIntervalRef = useRef(null);
-  const [isScrolling, setIsScrolling] = useState(false);
 
-  const song = JSON.parse(localStorage.getItem('currentSong'));
-  const user = JSON.parse(localStorage.getItem('user'));
-  const isSinger = user?.role === 'singer';
-  const isAdmin = user?.role === 'admin';
+  useEffect(() => {
+    const storedSong = JSON.parse(localStorage.getItem('currentSong'));
+    const storedUser = JSON.parse(localStorage.getItem('user'));
 
+    setSong(storedSong);
+    setUser(storedUser);
+
+    return () => stopScroll(); // החלפנו ל־stopScroll במקום stopAutoScroll
+  }, []);
+
+  useEffect(() => {
+    socket.on('sessionEnded', () => {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const role = storedUser?.role;
+      localStorage.removeItem('currentSong');
+      window.location.href = role === 'admin' ? '/admin' : '/player';
+    });
+    return () => socket.off('sessionEnded');
+  }, []);
+
+  // גרסה מותאמת לגלילה שעובדת טוב גם במובייל
   const scrollToBottom = () => {
     if (!scrollRef.current) return;
 
     const scrollStep = () => {
       if (!scrollRef.current) return;
 
-      // בדיקה אם הגענו לסוף הגלילה
-      if (scrollRef.current.scrollTop + scrollRef.current.clientHeight >= scrollRef.current.scrollHeight) {
+      if (
+        scrollRef.current.scrollTop + scrollRef.current.clientHeight >=
+        scrollRef.current.scrollHeight
+      ) {
         clearInterval(scrollIntervalRef.current);
         setIsScrolling(false);
         return;
       }
 
-      scrollRef.current.scrollTop += 2; // שינוי קטן בכל צעד כדי להאט את הגלילה
+      scrollRef.current.scrollTop += 2; // האטה בגלילה
     };
 
-    scrollIntervalRef.current = setInterval(scrollStep, 40); // קצב הגלילה
+    scrollIntervalRef.current = setInterval(scrollStep, 20); // קצב גלילה
     setIsScrolling(true);
   };
 
@@ -40,60 +63,74 @@ function LivePage() {
   };
 
   const handleQuit = () => {
-    localStorage.removeItem('currentSong');
-    window.location.href = isAdmin ? '/admin' : '/player';
+    socket.emit('sessionEnded');
   };
 
-  if (!song || !user) {
-    return <p className="text-white p-8 text-center">טוען שיר...</p>;
-  }
+  const renderSongContent = () => {
+    if (!song?.data || !Array.isArray(song.data)) {
+      return <p className="text-white drop-shadow-md">No song content available.</p>;
+    }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 text-white p-4">
-      <h1 className="text-4xl font-bold text-center mb-6">
-        {song.title} <span className="text-2xl italic font-light">– {song.artist}</span>
-      </h1>
+    const isSinger = user?.role === 'singer';
 
-      <div
-        ref={scrollRef}
-        className="h-[70vh] overflow-y-auto bg-white/10 rounded-xl p-4"
-        style={{ WebkitOverflowScrolling: 'touch', overflowY: 'auto' }}
-      >
-        <div className="space-y-8">
-          {song.data.map((line, i) => (
-            <div key={i} className="flex flex-wrap justify-center gap-x-6 text-center">
-              {line.map((word, j) => (
-                <div key={j} className="flex flex-col items-center min-w-[3ch]">
-                  {!isSinger && (
-                    <span className="text-purple-300 text-lg italic mb-1 leading-none">
-                      {word.chords || '\u00A0'}
-                    </span>
-                  )}
-                  <span className="text-white text-3xl font-semibold leading-tight">
-                    {word.lyrics}
-                  </span>
-                </div>
-              ))}
+    return song.data.map((line, i) => (
+      <div key={i} className="mb-10 bg-white/10 rounded-xl p-4 shadow-md max-w-5xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-x-6 text-center">
+          {line.map((word, j) => (
+            <div key={j} className="flex flex-col items-center min-w-[3ch]">
+              {!isSinger && (
+                <span className="text-purple-200 text-xl italic mb-1 leading-none drop-shadow">
+                  {word.chords || '\u00A0'}
+                </span>
+              )}
+              <span className="text-white text-5xl font-bold leading-tight drop-shadow">
+                {word.lyrics}
+              </span>
             </div>
           ))}
         </div>
       </div>
+    ));
+  };
 
-      <div className="mt-6 flex justify-center gap-4">
-        <button
-          onClick={toggleScroll}
-          className="bg-green-600 px-6 py-2 rounded-lg shadow hover:bg-green-500"
-        >
-          {isScrolling ? 'עצור גלילה' : 'גלול עד הסוף'}
-        </button>
+  if (!song || !user) {
+    return <p className="text-white p-8">Loading live session...</p>;
+  }
 
-        {isAdmin && (
+  const isAdmin = user.role === 'admin';
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 px-8 py-12 relative">
+      <h1 className="text-6xl text-center font-extrabold text-white mb-10 animate-fade-in">
+        {song.title}{' '}
+        <span className="italic font-light text-4xl">– {song.artist}</span>
+      </h1>
+
+      <div
+        ref={scrollRef}
+        className="h-[calc(100vh-220px)] overflow-y-auto scroll-smooth px-4"
+      >
+        {renderSongContent()}
+      </div>
+
+      <div className="absolute bottom-4 left-0 w-full px-8 flex justify-between items-center pointer-events-none">
+        <div className="pointer-events-auto">
           <button
-            onClick={handleQuit}
-            className="bg-red-600 px-6 py-2 rounded-lg shadow hover:bg-red-500"
+            onClick={toggleScroll}
+            className="bg-gray-800 hover:bg-gradient-to-r from-purple-600 to-pink-600 transform transition hover:scale-105 active:scale-95 text-white px-6 py-3 rounded-xl shadow-xl"
           >
-            Quit
+            {isScrolling ? 'Stop Scroll' : 'Start Scroll'}
           </button>
+        </div>
+        {isAdmin && (
+          <div className="pointer-events-auto">
+            <button
+              onClick={handleQuit}
+              className="bg-gray-800 hover:bg-gradient-to-r from-red-600 to-pink-500 transform transition hover:scale-105 active:scale-95 text-white px-6 py-3 rounded-xl shadow-xl"
+            >
+              Quit
+            </button>
+          </div>
         )}
       </div>
     </div>
