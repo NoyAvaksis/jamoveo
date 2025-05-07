@@ -46,7 +46,7 @@ function LivePage() {
       scrollRef.current.scrollTop += 2;
     };
 
-    scrollIntervalRef.current = setInterval(scrollStep, 40); // קצב איטי שמתאים למובייל
+    scrollIntervalRef.current = setInterval(scrollStep, 20);
     setIsScrolling(true);
   };
 
@@ -65,7 +65,7 @@ function LivePage() {
 
   const renderSongContent = () => {
     if (!song?.data || !Array.isArray(song.data)) {
-      return <p className="text-white drop-shadow-md text-center">אין תוכן להצגה</p>;
+      return <p className="text-white drop-shadow-md text-center">No content to display.</p>;
     }
 
     const isSinger = user?.role === 'singer';
@@ -75,11 +75,11 @@ function LivePage() {
         {line.map((word, j) => (
           <div key={j} className="flex flex-col items-center min-w-[6ch]">
             {!isSinger && (
-              <span className="text-purple-300 text-5xl italic mb-4 leading-none drop-shadow-lg">
+              <span className="text-purple-300 text-4xl italic mb-4 leading-none drop-shadow-lg">
                 {word.chords || '\u00A0'}
               </span>
             )}
-            <span className="text-white text-9xl font-extrabold leading-relaxed drop-shadow-2xl">
+            <span className="text-white text-7xl font-extrabold leading-relaxed drop-shadow-2xl">
               {word.lyrics}
             </span>
           </div>
@@ -89,15 +89,15 @@ function LivePage() {
   };
 
   if (!song || !user) {
-    return <p className="text-white p-8 text-center text-5xl">טוען שיר...</p>;
+    return <p className="text-white p-8 text-center text-5xl">Loading song...</p>;
   }
 
   const isAdmin = user.role === 'admin';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-yellow-600 text-white p-4">
-      <h1 className="text-7xl font-extrabold text-center mb-12 drop-shadow-lg">
-        {song.title} <span className="text-5xl italic font-light">– {song.artist}</span>
+      <h1 className="text-6xl font-extrabold text-center mb-12 drop-shadow-lg">
+        {song.title} <span className="text-4xl italic font-light">– {song.artist}</span>
       </h1>
 
       <div
@@ -108,18 +108,18 @@ function LivePage() {
         <div className="space-y-20">{renderSongContent()}</div>
       </div>
 
-      <div className="mt-12 flex justify-center gap-10">
+      <div className="mt-12 flex justify-center gap-10 flex-wrap">
         <button
           onClick={toggleScroll}
-          className="bg-green-600 px-12 py-5 rounded-lg shadow-lg text-4xl font-bold hover:bg-green-500 transition-transform transform hover:scale-105"
+          className="bg-gradient-to-r from-green-500 to-green-700 text-white px-10 py-4 rounded-2xl shadow-2xl text-2xl font-semibold hover:scale-105 active:scale-95 transition"
         >
-          {isScrolling ? 'עצור גלילה' : 'גלול עד הסוף'}
+          {isScrolling ? 'Stop Scrolling' : 'Scroll to Bottom'}
         </button>
 
         {isAdmin && (
           <button
             onClick={handleQuit}
-            className="bg-red-600 px-12 py-5 rounded-lg shadow-lg text-4xl font-bold hover:bg-red-500 transition-transform transform hover:scale-105"
+            className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-10 py-4 rounded-2xl shadow-2xl text-2xl font-semibold hover:scale-105 active:scale-95 transition"
           >
             Quit
           </button>
