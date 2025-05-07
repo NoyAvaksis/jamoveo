@@ -9,8 +9,16 @@ function LivePage() {
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollRef = useRef(null);
   const scrollIntervalRef = useRef(null);
+  const scrollSpeedRef = useRef(1); // Default scroll speed
+  const isMobileRef = useRef(false);
 
   useEffect(() => {
+    // Check if the device is mobile
+    isMobileRef.current = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+    
+    // Load stored data
     const storedSong = JSON.parse(localStorage.getItem('currentSong'));
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
@@ -32,14 +40,45 @@ function LivePage() {
 
   const startAutoScroll = () => {
     if (!scrollRef.current) return;
-    scrollIntervalRef.current = setInterval(() => {
-      scrollRef.current.scrollBy({ top: 1, behavior: 'smooth' });
-    }, 40);
-    setIsScrolling(true);
+    
+    // Clear any existing interval
+    stopAutoScroll();
+    
+    // Use requestAnimationFrame for smoother scrolling on mobile
+    if (isMobileRef.current) {
+      let lastTimestamp = null;
+      const scrollSpeed = 0.5; // Slower speed for mobile (adjust as needed)
+      
+      const step = (timestamp) => {
+        if (!isScrolling) return;
+        
+        if (lastTimestamp) {
+          const elapsed = timestamp - lastTimestamp;
+          scrollRef.current.scrollTop += (scrollSpeed * elapsed) / 16; // Normalize to roughly 60fps
+        }
+        
+        lastTimestamp = timestamp;
+        scrollIntervalRef.current = requestAnimationFrame(step);
+      };
+      
+      setIsScrolling(true);
+      scrollIntervalRef.current = requestAnimationFrame(step);
+    } else {
+      // Original interval-based scrolling for desktop
+      scrollIntervalRef.current = setInterval(() => {
+        scrollRef.current.scrollBy({ top: scrollSpeedRef.current, behavior: 'auto' });
+      }, 40);
+      setIsScrolling(true);
+    }
   };
 
   const stopAutoScroll = () => {
-    clearInterval(scrollIntervalRef.current);
+    if (isMobileRef.current && scrollIntervalRef.current) {
+      cancelAnimationFrame(scrollIntervalRef.current);
+    } else {
+      clearInterval(scrollIntervalRef.current);
+    }
+    scrollIntervalRef.current = null;
     setIsScrolling(false);
   };
 
@@ -93,8 +132,11 @@ function LivePage() {
 
       <div
         ref={scrollRef}
-        className="h-[calc(100dvh-220px)] overflow-y-auto scroll-smooth px-4 touch-auto overscroll-contain"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        className="h-[calc(100dvh-220px)] overflow-y-auto overscroll-contain px-4 touch-auto"
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          scrollBehavior: isMobileRef.current ? 'auto' : 'smooth'
+        }}
       >
         {renderSongContent()}
       </div>
