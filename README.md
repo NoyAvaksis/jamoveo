@@ -24,6 +24,12 @@ Musicians and singers can join live sessions, see role-based song views, and sta
 - **Frontend**: React, Vite, TailwindCSS, React Router, Axios, Socket.IO-client  
 - **Backend**: Node.js, Express, Socket.IO-server, MongoDB (Atlas)  
 - **Deployment**: Vercel (Client) + Railway (Server)
+---
+
+## 🌐 Live Demo
+
+Check out the live app here:  
+👉 [https://jamoveo.vercel.app](https://jamoveo.vercel.app)
 
 ---
 
