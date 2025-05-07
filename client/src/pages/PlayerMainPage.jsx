@@ -72,7 +72,7 @@ function PlayerMainPage() {
       <footer className="text-center py-6 text-sm bg-black/30">
         Created by Noy Abecassis © 2025 •{' '}
         <a
-          href="https://github.com/NoyAvaksis"
+          href="https://github.com/NoyAvaksis/jamoveo"
           className="underline"
           target="_blank"
           rel="noopener noreferrer"
