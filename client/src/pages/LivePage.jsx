@@ -93,12 +93,11 @@ function LivePage() {
 
       <div
         ref={scrollRef}
-        className="h-[calc(100vh-220px)] overflow-y-auto scroll-smooth px-4"
+        className="h-[calc(100dvh-220px)] overflow-y-auto scroll-smooth px-4 touch-auto overscroll-contain"
       >
         {renderSongContent()}
       </div>
 
-      {/* כפתורים מיושרים מתחת לגלילה – מדויק */}
       <div className="absolute bottom-4 left-0 w-full px-8 flex justify-between items-center pointer-events-none">
         <div className="pointer-events-auto">
           <button
